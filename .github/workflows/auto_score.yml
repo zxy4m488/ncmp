@@ -1,17 +1,18 @@
-name: Auto Score
+name: Refresh Cookie
 
 on:
   schedule:
-    - cron: '0 17 * * *'  # UTC 17:00 (北京时间1:00)
+    - cron: '0 14 * * 0'  # 每周日UTC 14:00 (北京时间22:00)
   workflow_dispatch:
 
 jobs:
-  score:
+  refresh:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -23,12 +24,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run script
+      - name: Run refresh script
         env:
           MUSIC_U: ${{ secrets.MUSIC_U }}
           CSRF: ${{ secrets.CSRF }}
-          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          FULL_EXTRA_TASKS: ${{ secrets.FULL_EXTRA_TASKS }}
-          SCORE: ${{ secrets.SCORE }}
-        run: python main.py
+          NETEASE_PHONE: ${{ secrets.NETEASE_PHONE }}
+          NETEASE_PASSWORD: ${{ secrets.NETEASE_PASSWORD }}
+          NETEASE_MD5_PASSWORD: ${{ secrets.NETEASE_MD5_PASSWORD }}
+        run: python refresh_cookie.py
